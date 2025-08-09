@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Usuario
+from .models import Usuario, Produto, Almoxarifado, OrdemServico
 
 # Create your views here.
 
@@ -33,3 +33,36 @@ def menu_view(request):
 def logou_view(request):
     request.session.flush()
     return redirect('login')
+
+from .models import Almoxarifado, Produto
+
+def visualizar_itens(request):
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+
+    # Filtragem
+    codigo = request.GET.get('codigo') or ''
+    descricao = request.GET.get('descricao') or ''
+    um = request.GET.get('um') or ''
+    almox_id = request.GET.get('almox_principal_id') or ''
+
+    itens = Produto.objects.select_related('almox_principal_id').all()
+    if codigo:
+        itens = itens.filter(codigo__icontains=codigo)
+    if descricao:
+        itens = itens.filter(descricao__icontains=descricao)
+    if um:
+        itens = itens.filter(UM__icontains=um)
+    if almox_id:
+        itens = itens.filter(almox_principal_id=almox_id)
+
+    almoxarifados = Almoxarifado.objects.all()
+    return render(request, 'visualizar_itens.html', {'itens': itens, 'almoxarifados': almoxarifados})
+
+def criar_ordem_servico(request):
+    if request.method == 'POST':
+        codigo = request.POST.get('codigo')
+        descricao = request.POST.get('descricao')
+        OrdemServico.objects.create(codigo = codigo, descricao = descricao)
+        
+    return redirect('menu')
