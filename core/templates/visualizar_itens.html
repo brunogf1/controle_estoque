@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Produtos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/lista_produtos.css' %}">
+</head>
+<body>
+    <div class="central-area">
+        <div class="header-card">
+            <span class="header-title">
+                <i class="fas fa-box-open"></i>
+                LISTA DE PRODUTOS
+            </span>
+            <form method="get" class="filtros-produtos">
+                <input type="text" name="codigo" placeholder="Código" value="{{ request.GET.codigo }}">
+                <input type="text" name="descricao" placeholder="Descrição" value="{{ request.GET.descricao }}">
+                <input type="text" name="um" placeholder="UM" value="{{ request.GET.um }}">
+                <select name="almox_principal_id">
+                    <option value="">Almoxarifado</option>
+                    {% for almox in almoxarifados %}
+                        <option value="{{ almox.id }}"
+                        {% if request.GET.almox_principal_id == almox.id|stringformat:'s' %}selected{% endif %}>
+                        {{ almox.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit"><i class="fas fa-filter"></i> Filtrar</button>
+                {% if request.GET %}
+                    <a class="btn-limpar" href="{% url 'visualizar_itens' %}"><i class="fas fa-times"></i></a>
+                {% endif %}
+            </form>
+        </div>
+        <div class="table-card">
+            <table class="produtos-tabela">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Código</th>
+                        <th>Descrição</th>
+                        <th>UM</th>
+                        <th>Almoxarifado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in itens %}
+                        <tr>
+                            <td>{{ produto.id }}</td>
+                            <td>{{ produto.codigo }}</td>
+                            <td>{{ produto.descricao }}</td>
+                            <td>{{ produto.UM }}</td>
+                            <td>
+                                {% if produto.almox_principal_id %}
+                                    {{ produto.almox_principal_id.nome }}
+                                {% else %}-{% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="no-produtos">Nenhum produto cadastrado.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="botoes">
+            <a href="{% url 'menu' %}" class="btn-voltar"><i class="fas fa-arrow-left"></i> Voltar ao menu</a>
+        </div>
+    </div>
+</body>
+</html>

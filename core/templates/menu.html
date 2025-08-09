@@ -1,10 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
+    <meta charset="UTF-8">
     <title>Menu - Controle de Estoque</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/menu.css' %}">
 </head>
 <body>
-    <h2>Bem-vindo, {{ request.session.usuario_nome }}!</h2>
-    <h3>MENU PRINCIPAL</h3>
+    <div class="header-bar">
+        <h2>BEM VINDO {{ request.session.usuario_nome|upper }}</h2>
+    </div>
+    <div class="container">
+    <div class="menu-area" style="margin-bottom: 20px;">
+        <!-- Card PRODUTOS  -->
+        <a href="{% url 'visualizar_itens' %}" style="text-decoration: none;">
+            <div class="card-opcao">
+                <div class="card-content">
+                    <div class="card-title">PRODUTOS</div>
+                    <div class="card-desc-row">
+                        <span class="icon-placeholder">
+                            <i class="fas fa-box-open" style="color:#232323; font-size:3.5rem;"></i>
+                        </span>
+                        <span class="card-desc">
+                            Listagem dos produtos em estoque e suas informações.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <!-- Card MOVIMENTAÇÃO -->
+        <a>
+            <div class="card-opcao">
+                <div class="card-content">
+                    <div class="card-title">MOVIMENTAÇÃO</div>
+                    <div class="card-desc-row">
+                        <span class="icon-placeholder">
+                            <i class="fas fa-exchange-alt" style="color:#232323; font-size:3.5rem;"></i>
+                        </span>
+                        <span class="card-desc">
+                            Realize entradas e saídas de materiais.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <!-- Segunda linha só com card de Ordem de Serviço -->
+    <div class="menu-area" style="justify-content: center;">
+        <div class="card-opcao" id="abrirModalOrdem" style="cursor:pointer;">
+            <div class="card-content">
+                <div class="card-title">ORDEM DE SERVIÇO</div>
+                <div class="card-desc-row">
+                    <span class="icon-placeholder">
+                        <i class="fas fa-file-signature" style="color:#232323; font-size:3.5rem;"></i>
+                    </span>
+                    <span class="card-desc">
+                        Crie uma nova Ordem de Serviço preenchendo código e descrição.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- O Modal -->
+    <div id="modalOrdemServico" class="modal-ordem">
+        <div class="modal-conteudo-ordem">
+            <span class="modal-close" id="fecharModalOrdem">&times;</span>
+            <h2><i class="fas fa-file-signature"></i> Nova Ordem de Serviço</h2>
+            <form method="post" action="{% url 'criar_ordem_servico' %}">
+                {% csrf_token %}
+                <label for="codigo">Código:</label>
+                <input type="number" step="1" min="0" id="codigo" name="codigo" required style="width:100%;">
+                <label for="descricao">Descrição:</label>
+                <input type="text" id="descricao" name="descricao" maxlength="100" required style="width:100%;">
+                <button type="submit"><i class="fas fa-check"></i> Criar Ordem</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('abrirModalOrdem').onclick = function(){
+        document.getElementById('modalOrdemServico').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    document.getElementById('fecharModalOrdem').onclick = function(){
+        document.getElementById('modalOrdemServico').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    // Fecha ao clicar no fundo escuro
+    document.getElementById('modalOrdemServico').onclick = function(event){
+        if (event.target === this){
+            this.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    }
+</script>
+
 </body>
 </html>
