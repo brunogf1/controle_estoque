@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Movimentação de Estoque</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/mov_estoque.css' %}">
+</head>
+<body>
+    <div class="central-area">
+        <div class="header-card">
+            <span class="header-title">
+                <i class="fas fa-exchange-alt"></i>
+                MOVIMENTAÇÃO DE ESTOQUE
+            </span>
+        </div>
+        <form class="movimentacao-form" method="post" autocomplete="off">
+            {% csrf_token %}
+            <div class="form-row-group">
+                <div class="form-col">
+                    <label for="produto_busca">Produto</label>
+                    <input type="text" id="produto_busca" name="produto_busca" placeholder="Código ou descrição..." required autocomplete="off">
+                    <input type="hidden" id="produto_id" name="produto_id">
+                    <div id="produto_sugestoes" class="autocomplete-box"></div>
+
+                    <label for="qtd" style="margin-top:18px;">Quantidade</label>
+                    <input type="number" name="qtd" id="qtd" min="1" step="1" placeholder="Quantidade" required>
+                </div>
+                <div class="form-col">
+                    <label>Almox. Principal do Produto</label>
+                    <input type="text" id="almox_principal_info" name="almox_principal_info" readonly placeholder="(Selecione o produto)" value="">
+
+                    <label for="almox_destino" style="margin-top:18px;">Almoxarifado de Destino</label>
+                    <select name="almox_destino" id="almox_destino" required>
+                        <option value="">Selecione...</option>
+                        {% for almox in almoxarifados %}
+                            <option value="{{ almox.id }}">{{ almox.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-row-group lower">
+                <div class="form-col">
+                    <label for="os_id">Ordem de Serviço</label>
+                    <select name="os_id" id="os_id">
+                        <option value="">Nenhuma</option>
+                        {% for os in ordens_servico %}
+                            <option value="{{ os.id }}">{{ os.codigo }} - {{ os.descricao }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-col">
+                    <label for="tipo">Tipo</label>
+                    <select name="tipo" id="tipo" required>
+                        <option value="">Selecione...</option>
+                        <option value="entrada">Entrada</option>
+                        <option value="saida">Saída</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-botoes-central">
+                <button type="submit" class="btn-salvar">
+                    <i class="fas fa-check"></i> Realizar Movimentação
+                </button>
+            </div>
+        </form>
+        <div class="botoes-menu">
+            <a href="{% url 'menu' %}" class="btn-voltar">
+                <i class="fas fa-arrow-left"></i> Voltar ao menu
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -47,6 +47,19 @@ class OrdemServico(models.Model):
     def __str__(self):
         return f"{self.codigo} - {self.descricao or ''}"
     
+class MovimentacaoEstoque(models.Model):
+    id = models.AutoField(primary_key=True)
+    tipo = models.CharField(max_length=100)
+    data_mov = models.DateTimeField()
+    quantidade = models.IntegerField()
+    produto = models.ForeignKey('Produto', models.DO_NOTHING, db_column='produto_id')
+    almox = models.ForeignKey('Almoxarifado', models.DO_NOTHING, db_column='almox_id')
+    os = models.ForeignKey('OrdemServico', models.DO_NOTHING, db_column='os_id', blank=True, null=True)
+    
+    class Meta:
+        db_table = 'movimentacao_estoque'
+        managed = False
+            
 class Usuario(models.Model):
     id = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=100)

@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Menu - Controle de Estoque</title>
+    <title>Menu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
     {% load static %}
@@ -11,6 +11,9 @@
 <body>
     <div class="header-bar">
         <h2>BEM VINDO {{ request.session.usuario_nome|upper }}</h2>
+        <a class="logout-btn" href="{% url 'logout' %}">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </a>
     </div>
     <div class="container">
     <div class="menu-area" style="margin-bottom: 20px;">
@@ -31,7 +34,7 @@
             </div>
         </a>
         <!-- Card MOVIMENTAÇÃO -->
-        <a>
+        <a href="{% url 'movimentacao_estoque' %}" style="text-decoration: none;">
             <div class="card-opcao">
                 <div class="card-content">
                     <div class="card-title">MOVIMENTAÇÃO</div>
@@ -47,8 +50,10 @@
             </div>
         </a>
     </div>
-    <!-- Segunda linha só com card de Ordem de Serviço -->
+
+    <!-- Segunda linha. Cards de Ordem de Serviço e Historico de Movimentacoes -->
     <div class="menu-area" style="justify-content: center;">
+         <!-- Card ORDEM DE SERVIÇO -->
         <div class="card-opcao" id="abrirModalOrdem" style="cursor:pointer;">
             <div class="card-content">
                 <div class="card-title">ORDEM DE SERVIÇO</div>
@@ -62,7 +67,22 @@
                 </div>
             </div>
         </div>
-    </div>
+        <!-- Card HISTÓRICO DE MOVIMENTAÇÕES -->
+        <a href="{% url 'historico_movimentacoes' %}" style="text-decoration: none;">
+            <div class="card-opcao">
+                <div class="card-content">
+                    <div class="card-title">HISTÓRICO</div>
+                        <div class="card-desc-row">
+                        <span class="icon-placeholder">
+                            <i class="fas fa-history" style="color:#232323; font-size:3.5rem;"></i>
+                        </span>
+                        <span class="card-desc">
+                             Visualize todas as entradas e saídas já realizadas no estoque.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
     <!-- O Modal -->
     <div id="modalOrdemServico" class="modal-ordem">
         <div class="modal-conteudo-ordem">
@@ -97,6 +117,5 @@
         }
     }
 </script>
-
 </body>
 </html>

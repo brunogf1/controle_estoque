@@ -199,3 +199,32 @@ body {
     transition: color 0.18s;
 }
 .modal-close:hover { color: #b50000; }
+
+.logout-btn {
+    background: #fff200;
+    color: #232323;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 11px 26px;
+    text-decoration: none;
+    box-shadow: 0 2px 9px #fff20044;
+    font-size: 1.08rem;
+    transition: box-shadow 0.15s, background 0.18s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-left: 18px;
+    cursor: pointer;
+}
+.logout-btn:hover {
+    background: #ffee45;
+    color: #232323;
+    text-decoration: none;
+}
+@media (max-width: 600px) {
+    .logout-btn { 
+        padding: 11px 12px; 
+        font-size: 0.96rem;
+    }
+}

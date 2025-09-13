@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Usuario, Produto, Almoxarifado, OrdemServico
+from .models import Usuario, Produto, Almoxarifado, OrdemServico, MovimentacaoEstoque
 
 # Create your views here.
 
@@ -30,7 +30,7 @@ def menu_view(request):
         return redirect ('login') 
     return render (request, 'menu.html')
 
-def logou_view(request):
+def logout_view(request):
     request.session.flush()
     return redirect('login')
 
@@ -66,3 +66,16 @@ def criar_ordem_servico(request):
         OrdemServico.objects.create(codigo = codigo, descricao = descricao)
         
     return redirect('menu')
+
+def historico_movimentacoes(request):
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+    movimentacoes = (
+        MovimentacaoEstoque.objects.select_related('produto', 'almox', 'os').order_by('-data_mov')
+    )
+    return render(request, 'historico_movimentacoes.html', {'movimentacoes': movimentacoes})
+
+def movimentacao_estoque(request):
+    if not request.session.get('usuario_id'):
+        return redirect('login')
+    return render(request, 'movimentacao_estoque.html')

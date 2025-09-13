@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico de Movimentações</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/historico_mov.css' %}">
+</head>
+<body>
+    <div class="central-area">
+        <!-- Header + Filtros -->
+        <div class="header-card">
+            <span class="header-title">
+                <i class="fas fa-file-alt"></i>
+                HISTÓRICO DE MOVIMENTAÇÕES
+            </span>
+            <form method="get" class="filtros-movimentacoes">
+                <input type="text" name="produto" placeholder="Produto (desc.)" value="{{ request.GET.produto }}">
+                <input type="text" name="tipo" placeholder="Tipo (entrada/saída)" value="{{ request.GET.tipo }}">
+                <input type="text" name="os" placeholder="Ordem Serviço" value="{{ request.GET.os }}">
+                <select name="almox_id">
+                    <option value="">Almoxarifado</option>
+                    {% for almox in almoxarifados %}
+                        <option value="{{ almox.id }}"
+                        {% if request.GET.almox_id == almox.id|stringformat:'s' %}selected{% endif %}>
+                        {{ almox.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <input type="date" name="data_de" value="{{ request.GET.data_de }}" placeholder="De">
+                <input type="date" name="data_ate" value="{{ request.GET.data_ate }}" placeholder="Até">
+                <button type="submit"><i class="fas fa-filter"></i> Filtrar</button>
+                {% if request.GET %}
+                    <a class="btn-limpar" href="{% url 'historico_movimentacoes' %}"><i class="fas fa-times"></i></a>
+                {% endif %}
+            </form>
+        </div>
+        <!-- Table-card/Relatório -->
+        <div class="table-card">
+            <table class="historico-tabela">
+                <thead>
+                    <tr>
+                        <th>Data/Hora</th>
+                        <th>Tipo</th>
+                        <th>Produto</th>
+                        <th>Qtd.</th>
+                        <th>Almoxarifado</th>
+                        <th>Ordem Serviço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mov in movimentacoes %}
+                        <tr class="{{ mov.tipo }}">
+                            <td>{{ mov.data_mov|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <span class="tipo-{{ mov.tipo|lower }}">
+                                    <i class="fas {% if mov.tipo == 'entrada' %}fa-arrow-down{% else %}fa-arrow-up{% endif %}"></i>
+                                    {{ mov.tipo|upper }}
+                                </span>
+                            </td>
+                            <td>{{ mov.produto.descricao }}</td>
+                            <td>{{ mov.quantidade }}</td>
+                            <td>{{ mov.almox.nome }}</td>
+                            <td>
+                                {% if mov.os %}
+                                    {{ mov.os.codigo }} - {{ mov.os.descricao }}
+                                {% else %}
+                                    <span class="os-na">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="nenhuma-mov">
+                                <i class="fas fa-info-circle"></i> Nenhuma movimentação registrada.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="botoes">
+            <a href="{% url 'menu' %}" class="btn-voltar"><i class="fas fa-arrow-left"></i> Voltar ao menu</a>
+        </div>
+    </div>
+</body>
+</html>
